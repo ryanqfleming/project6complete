@@ -1,0 +1,32 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000p\u0000o\u0000r\u0000j\u0000e\u0000c\u0000t\u00006\u0000\r\u0000 \u0000",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryanqfleming/porject6.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ryanqfleming/porject6/issues"
+  },
+  "homepage": "https://github.com/ryanqfleming/porject6#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^14.2.0",
+    "express": "^4.17.2",
+    "express-static": "^1.2.6",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.7",
+    "mongoose-mongodb-errors": "0.0.2",
+    "multer": "^1.4.4",
+    "path": "^0.12.7",
+    "querystring": "^0.2.1"
+  }
+}
