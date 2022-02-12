@@ -8,6 +8,11 @@ const Sauces = require("./models/sauces");
 const { ppid, nextTick } = require("process");
 const path = require("path");
 const bcrypt = require("bcrypt");
+<<<<<<< HEAD
+=======
+console.log("in node.js");
+console.log(Users, "users information");
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
 const app = express();
 const cookieParser = require("cookie-parser");
 const dbURI =
@@ -42,7 +47,13 @@ app.post("/api/sauces",upload.single("image"),authenticateToken,(req, res) => {
     //create the sauce
     sauceObj = JSON.parse(req.body.sauce);
 
+<<<<<<< HEAD
     let urlFix = "http://localhost:3000/" + req.file.path.replace("\\", "/");
+=======
+    console.log(req.file.path, "the file");
+    let urlFix = "http://localhost:3000/" + req.file.path.replace("\\", "/");
+    console.log(req.user, "user id");
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
     const sauce = new Sauces({
       userId: req.user._id,
       name: sauceObj.name,
@@ -57,8 +68,14 @@ app.post("/api/sauces",upload.single("image"),authenticateToken,(req, res) => {
       usersDisliked: [],
     });
     sauce.save()
+<<<<<<< HEAD
     .then((result)=> res.send({message: 'posted'}))
     .catch((error)=>{console.log('Failed To Save')});
+=======
+    .catch((error)=>{console.log('you broke it')});
+    //could add a checker for this save like I did for signup
+    res.send({ message: "Posted" });
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
   }
 );
 //post request for sign up
@@ -68,8 +85,15 @@ app.post("/api/auth/signup", (req, res) => {
     password: req.body.password,
   });
   bcrypt.genSalt(12).then((salt) => {
+<<<<<<< HEAD
     bcrypt.hash(req.body.password, salt).then((hash) => {
       user.password = hash;
+=======
+    console.log("into the crypt");
+    bcrypt.hash(req.body.password, salt).then((hash) => {
+      user.password = hash;
+      console.log("user", user);
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
 
       //pulling data then checking to make sure we don't have duplicates
       //we don't need to pull the extra to match passwords
@@ -81,13 +105,33 @@ app.post("/api/auth/signup", (req, res) => {
           __v: false,
         }
       ).then((result) => {
+<<<<<<< HEAD
         
+=======
+        //ensure the data is saved before sending response to ensure the login post
+        //does not fire before the database has saved. Checking every half a second
+        // function dbSaveCheck() {
+        //   Users.findOne({ email: user.email }).then((results) => {
+        //     if (results === null) {
+        //       setTimeout(dbSaveCheck, 500);
+        //     } else {
+        //       res.send({ message: "Passed" });
+        //     }
+        //   });
+        // }
+        //
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
         if (result.length === 0) {
           //no data exists, Lets just save
           user.save().then((result)=>{
             res.send({message: 'passed'})
+<<<<<<< HEAD
           })
           .catch((error)=> console.log(error));
+=======
+          });
+          dbSaveCheck();
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
         } else {
           //data exists lets check for duplicates
           for (let i = 0; i < result.length; i++) {
@@ -97,10 +141,15 @@ app.post("/api/auth/signup", (req, res) => {
               res.sendStatus(403);
             } else if (i == result.length - 1) {
               //Saving the data if we have reached the last item without a match
+<<<<<<< HEAD
               user.save().then((result)=>{
                 res.send({message: 'passed'})
               })
               .catch((error)=> console.log(error));
+=======
+              user.save();
+              dbSaveCheck();
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
             }
           }
         }
@@ -111,19 +160,37 @@ app.post("/api/auth/signup", (req, res) => {
 
 app.post("/api/auth/login", (req, res) => {
   //look for email
+<<<<<<< HEAD
   console.log(req.body);
   Users.findOne({ email: req.body.email }).then((results) => {
+=======
+  console.log("login called");
+  console.log(req.body);
+  Users.findOne({ email: req.body.email }).then((results) => {
+    console.log(results, "results");
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
     if (results === null) {
       res.sendStatus(403);
     } else {
       //check password
       bcrypt.compare(req.body.password, results.password).then((compared) => {
+<<<<<<< HEAD
+=======
+        console.log("comparing");
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
         if (compared === false) {
           console.log("failed to create jwt");
           res.sendStatus(403);
         } else {
           //jwt sign
+<<<<<<< HEAD
         const token = jwt.sign(
+=======
+          //createJWT({_id: results._id})
+          // const userId = {_id: results._id}
+          console.log("creating jwt");
+          const token = jwt.sign(
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
             { _id: results._id },
             process.env.ACCESS_TOKEN_SECRET
           );
@@ -134,8 +201,15 @@ app.post("/api/auth/login", (req, res) => {
   });
 });
 app.get("/api/sauces", authenticateToken, (req, res) => {
+<<<<<<< HEAD
   console.log(req.body);
   Sauces.find({}, (err, result) => {
+=======
+  console.log("called the sauce");
+  console.log(req.body);
+  Sauces.find({}, (err, result) => {
+    console.log("found the sauce");
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
     if (err) return res.sendStatus(403);
     console.log(result);
     res.json(result);
@@ -152,10 +226,21 @@ app.get("/api/sauces/:id", authenticateToken, (req, res) => {
 app.delete("/api/sauces/:id", authenticateToken, (req, res) => {
   Sauces.findById(req.params.id, (err, result) => {
     if (err || result === null) return res.sendStatus(403);
+<<<<<<< HEAD
     if (req.user._id !== result.userId) return res.send("did not match");
 
     result.remove();
     res.send({message: 'deleted'});
+=======
+    console.log(result.userId, "super user");
+    if (req.user._id !== result.userId) return res.send("did not match");
+
+    console.log(req.user, "recked user");
+    console.log(result, "recked result");
+    result.remove();
+    console.log("deleted");
+    res.send("whatever bro");
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
   });
 });
 app.put(
@@ -170,6 +255,10 @@ app.put(
       //find the user
       Sauces.findById(req.params.id, (err, result) => {
         if (req.user._id !== result.userId) return res.send("did not match");
+<<<<<<< HEAD
+=======
+        console.log(req.file.path, "the file path");
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
         let idFind = { _id: result._id };
         let newImage = { $set: { imageUrl: req.file.path } };
         Sauces.updateOne(idFind, newImage, (err, result) => {
@@ -179,6 +268,10 @@ app.put(
             res.sendStatus(404);
           }
         });
+<<<<<<< HEAD
+=======
+        console.log(result._id, "the result");
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
       });
     }
   }
@@ -198,12 +291,20 @@ app.post("/api/sauces/:id/like", authenticateToken, (req, res) => {
             { _id: result._id },
             { $set: { usersDisliked: disHold } },
             (err, res) => {
+<<<<<<< HEAD
+=======
+              console.log(res);
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
             }
           );
           Sauces.updateOne(
             { _id: result._id },
             { $inc: { dislikes: -1 } },
             (err, res) => {
+<<<<<<< HEAD
+=======
+              console.log(res);
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
             }
           );
           break;
@@ -215,12 +316,20 @@ app.post("/api/sauces/:id/like", authenticateToken, (req, res) => {
         { _id: result._id },
         { $set: { usersLiked: likeHold } },
         (eer, res) => {
+<<<<<<< HEAD
+=======
+          console.log(res);
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
         }
       );
       Sauces.updateOne(
         { _id: result._id },
         { $inc: { likes: 1 } },
         (err, res) => {
+<<<<<<< HEAD
+=======
+          console.log(res);
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
         }
       );
     } else if (
@@ -267,8 +376,16 @@ app.post("/api/sauces/:id/like", authenticateToken, (req, res) => {
     } else if (req.body.like === 0) {
       //check both arrays and delete
       for (let i = 0; i < likeHold.length; i++) {
+<<<<<<< HEAD
         if (likeHold[i] == req.user._id) {
           likeHold.splice(i, 1);
+=======
+        console.log("in the for");
+        if (likeHold[i] == req.user._id) {
+          console.log(i);
+          likeHold.splice(i, 1);
+          console.log(likeHold);
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
           Sauces.updateOne(
             { _id: result._id },
             { $set: { usersLiked: likeHold } },
@@ -319,6 +436,10 @@ function authenticateToken(req, res, next) {
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, userId) => {
     if (err) return res.sendStatus(403);
     req.user = userId;
+<<<<<<< HEAD
+=======
+    console.log("passed");
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
     next();
   });
 }

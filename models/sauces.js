@@ -1,4 +1,8 @@
 const mongoose = require('mongoose');
+<<<<<<< HEAD
+=======
+console.log("inside sauces.js")
+>>>>>>> 4ea3f0ea9363e4e252b3a195bd46135c9b832465
 const sauceScheme = new mongoose.Schema({
     userId: {type: String, required: true},
     name: {type: String, required: true},
