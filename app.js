@@ -60,14 +60,14 @@ app.post("/api/sauces",upload.single("image"),authenticateToken,(req, res) => {
       usersLiked: [],
       usersDisliked: [],
     });
-    sauce.save();
+    sauce.save()
+    .catch((error)=>{console.log('you broke it')});
     //could add a checker for this save like I did for signup
     res.send({ message: "Posted" });
   }
 );
 //post request for sign up
 app.post("/api/auth/signup", (req, res) => {
-  console.log("inside post");
   const user = new Users({
     email: req.body.email,
     password: req.body.password,
@@ -90,18 +90,21 @@ app.post("/api/auth/signup", (req, res) => {
       ).then((result) => {
         //ensure the data is saved before sending response to ensure the login post
         //does not fire before the database has saved. Checking every half a second
-        function dbSaveCheck() {
-          Users.findOne({ email: user.email }).then((results) => {
-            if (results === null) {
-              setTimeout(dbSaveCheck, 500);
-            } else {
-              res.send({ message: "Passed" });
-            }
-          });
-        }
+        // function dbSaveCheck() {
+        //   Users.findOne({ email: user.email }).then((results) => {
+        //     if (results === null) {
+        //       setTimeout(dbSaveCheck, 500);
+        //     } else {
+        //       res.send({ message: "Passed" });
+        //     }
+        //   });
+        // }
+        //
         if (result.length === 0) {
           //no data exists, Lets just save
-          user.save();
+          user.save().then((result)=>{
+            res.send({message: 'passed'})
+          });
           dbSaveCheck();
         } else {
           //data exists lets check for duplicates
