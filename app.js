@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const mongodbErrorHandler = require('mongoose-mongodb-errors')
 const express = require("express");
 const multer = require("multer");
+require("dotenv").config();
 const Users = require("./models/users");
 const Sauces = require("./models/sauces");
 const { ppid, nextTick } = require("process");
@@ -10,12 +11,13 @@ const path = require("path");
 const bcrypt = require("bcrypt");
 const app = express();
 const cookieParser = require("cookie-parser");
-const dbURI = "mongodb+srv://ryanqfleming:DCFjbZHKL9Atku9w@cluster0.ncp8j.mongodb.net/ModelsSauce?retryWrites=true&w=majority";
+const mongopassword = process.env.DATABASE;
+const dbURI = "mongodb+srv://ryanqfleming:"+ mongopassword +"@cluster0.ncp8j.mongodb.net/ModelsSauce?retryWrites=true&w=majority";
 const jwt = require("jsonwebtoken");
 const sauces = require("./models/sauces");
 app.use(express.json());
 app.use(cookieParser());
-require("dotenv").config();
+
 var http = require("http");
 app.use("/images", express.static(__dirname + "/images"));
 //file storage for multr
@@ -27,13 +29,12 @@ const fileStorageEngine = multer.diskStorage({
     cb(null, Math.floor(Math.random() * 1000000) + "--" + file.originalname);
   },
 });
-
 const upload = multer({ storage: fileStorageEngine });
 //using mongoose to connect
 mongoose
   .connect(dbURI)
   .then((result) => app.listen(8081))
-  .catch((error) => console.log(err));
+  .catch((error) => console.log(error));
 
 app.post("/api/sauces",upload.single("image"),authenticateToken,(req, res) => {
     //Checks to make sure there is file.
@@ -110,7 +111,6 @@ app.post("/api/auth/signup", (req, res) => {
 
 app.post("/api/auth/login", (req, res) => {
   //look for email
-  console.log(req.body);
   Users.findOne({ email: req.body.email }).then((results) => {
     if (results === null) {
       res.sendStatus(403);
@@ -133,10 +133,8 @@ app.post("/api/auth/login", (req, res) => {
   });
 });
 app.get("/api/sauces", authenticateToken, (req, res) => {
-  console.log(req.body);
   Sauces.find({}, (err, result) => {
     if (err) return res.sendStatus(403);
-    console.log(result);
     res.json(result);
   });
 });
